@@ -1,0 +1,486 @@
+/* Friday AI Blueprint Graph Sheet Canvas & Widget Styles */
+
+:root {
+    --bg-dark: #0a0f1d;
+    --graph-line-minor: rgba(0, 242, 254, 0.08);
+    --graph-line-major: rgba(0, 242, 254, 0.22);
+    --panel-bg: rgba(13, 22, 42, 0.85);
+    --panel-border: rgba(0, 242, 254, 0.25);
+    --panel-header: rgba(18, 32, 60, 0.95);
+    --accent-cyan: #00f2fe;
+    --accent-blue: #4facfe;
+    --accent-green: #00e676;
+    --accent-yellow: #ffea00;
+    --accent-red: #ff1744;
+    --text-primary: #e0f2fe;
+    --text-muted: #94a3b8;
+    --grid-step: 20px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    user-select: none;
+}
+
+body.graph-canvas-bg {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Top Toolbar */
+.top-bar {
+    height: 50px;
+    background: rgba(10, 18, 36, 0.95);
+    border-bottom: 1px solid var(--panel-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-orb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent-cyan), var(--accent-blue));
+    box-shadow: 0 0 12px var(--accent-cyan);
+    animation: pulse 2s infinite ease-in-out;
+}
+
+.brand-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    color: #fff;
+}
+
+.brand-title small {
+    font-size: 0.75rem;
+    color: var(--accent-cyan);
+    margin-left: 6px;
+    font-weight: 500;
+}
+
+.status-badges {
+    display: flex;
+    gap: 12px;
+}
+
+.badge {
+    background: rgba(0, 242, 254, 0.1);
+    border: 1px solid rgba(0, 242, 254, 0.2);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.badge i {
+    color: var(--accent-cyan);
+}
+
+.toolbar-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-tool {
+    background: rgba(0, 242, 254, 0.12);
+    border: 1px solid rgba(0, 242, 254, 0.3);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-tool:hover {
+    background: rgba(0, 242, 254, 0.25);
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+}
+
+/* Blueprint Graph Paper Background Container */
+.canvas-grid {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    background-size: var(--grid-step) var(--grid-step), var(--grid-step) var(--grid-step), 100px 100px, 100px 100px;
+    background-image: 
+        linear-gradient(to right, var(--graph-line-minor) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--graph-line-minor) 1px, transparent 1px),
+        linear-gradient(to right, var(--graph-line-major) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--graph-line-major) 1px, transparent 1px);
+}
+
+/* Movable Widget Panels */
+.widget-panel {
+    position: absolute;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 242, 254, 0.05);
+    backdrop-filter: blur(16px);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.widget-panel:hover {
+    border-color: rgba(0, 242, 254, 0.5);
+    box-shadow: 0 10px 40px rgba(0, 242, 254, 0.15);
+}
+
+.widget-panel.dragging {
+    z-index: 50;
+    opacity: 0.92;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 25px rgba(0, 242, 254, 0.4);
+}
+
+/* Widget Header */
+.widget-header {
+    height: 38px;
+    background: var(--panel-header);
+    border-bottom: 1px solid var(--panel-border);
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    cursor: move;
+}
+
+.widget-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: var(--accent-cyan);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-drag {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    cursor: grab;
+}
+
+/* Widget Body */
+.widget-body {
+    flex: 1;
+    padding: 14px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Resize Handle */
+.resize-handle {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    right: 3px;
+    bottom: 3px;
+    cursor: se-resize;
+    border-right: 2px solid var(--accent-cyan);
+    border-bottom: 2px solid var(--accent-cyan);
+    border-bottom-right-radius: 4px;
+}
+
+/* Widget 1: Friday Face HUD */
+.face-body {
+    align-items: center;
+    justify-content: center;
+}
+
+.core-container {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.outer-ring {
+    position: absolute;
+    width: 170px;
+    height: 170px;
+    border: 2px dashed rgba(0, 242, 254, 0.4);
+    border-radius: 50%;
+    animation: rotateRing 20s linear infinite;
+}
+
+.middle-ring {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border: 2px solid rgba(79, 172, 254, 0.5);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: rotateRingRev 10s linear infinite;
+}
+
+.inner-core {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent-cyan), #0052d4);
+    box-shadow: 0 0 35px var(--accent-cyan);
+    transition: all 0.3s ease;
+}
+
+.waveform-svg {
+    position: absolute;
+    bottom: -10px;
+    width: 100%;
+}
+
+.core-status {
+    margin-top: 15px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--accent-cyan);
+}
+
+/* Widget 2: Chat Interface */
+.chat-body {
+    padding: 10px;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-right: 6px;
+    margin-bottom: 10px;
+}
+
+.chat-messages::-webkit-scrollbar {
+    width: 5px;
+}
+.chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(0, 242, 254, 0.2);
+    border-radius: 4px;
+}
+
+.msg {
+    display: flex;
+    gap: 10px;
+    max-width: 88%;
+}
+
+.msg.assistant {
+    align-self: flex-start;
+}
+
+.msg.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(0, 242, 254, 0.2);
+    border: 1px solid var(--accent-cyan);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: var(--accent-cyan);
+    flex-shrink: 0;
+}
+
+.msg.user .avatar {
+    background: rgba(79, 172, 254, 0.2);
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+.bubble {
+    background: rgba(18, 32, 60, 0.9);
+    border: 1px solid rgba(0, 242, 254, 0.15);
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    user-select: text;
+}
+
+.msg.user .bubble {
+    background: rgba(0, 242, 254, 0.15);
+    border-color: rgba(0, 242, 254, 0.3);
+}
+
+.chat-input-area {
+    display: flex;
+    gap: 8px;
+    background: rgba(10, 18, 36, 0.8);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    padding: 4px 8px;
+}
+
+.chat-input-area input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 0.9rem;
+    padding: 8px;
+    user-select: text;
+}
+
+.chat-input-area button {
+    background: var(--accent-cyan);
+    border: none;
+    color: #0a0f1d;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: transform 0.15s ease;
+}
+
+.chat-input-area button:hover {
+    transform: scale(1.05);
+}
+
+/* Widget 3: Audio & Mic Control */
+.audio-body {
+    gap: 14px;
+}
+
+.input-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.custom-select {
+    width: 100%;
+    background: rgba(10, 18, 36, 0.9);
+    border: 1px solid var(--panel-border);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    outline: none;
+    cursor: pointer;
+}
+
+.volume-meter-container {
+    background: rgba(10, 18, 36, 0.6);
+    border: 1px solid rgba(0, 242, 254, 0.15);
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.meter-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.meter-bar-track {
+    height: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.meter-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+    transition: width 0.1s linear;
+    border-radius: 5px;
+}
+
+.mic-status-text {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+.text-success { color: var(--accent-green); }
+
+/* Widget 4: Diagnostics & Logs */
+.logs-body {
+    padding: 8px;
+}
+
+.log-stream {
+    flex: 1;
+    background: rgba(5, 10, 20, 0.95);
+    border: 1px solid rgba(0, 242, 254, 0.15);
+    border-radius: 6px;
+    padding: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.log-line { line-height: 1.4; word-break: break-all; }
+.log-line.info { color: var(--accent-cyan); }
+.log-line.success { color: var(--accent-green); }
+.log-line.warn { color: var(--accent-yellow); }
+.log-line.error { color: var(--accent-red); }
+
+/* Animations */
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.9); }
+}
+
+@keyframes rotateRing {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes rotateRingRev {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
+}

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friday AI — Blueprint Canvas HUD</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="graph-canvas-bg">
+    <!-- Blueprint Top Toolbar -->
+    <header class="top-bar">
+        <div class="brand">
+            <div class="logo-orb"></div>
+            <span class="brand-title">FRIDAY <small>AI HUD</small></span>
+        </div>
+        <div class="status-badges">
+            <span class="badge" id="llm-badge"><i class="fa-solid fa-brain"></i> <span id="llm-text">Groq (120B)</span></span>
+            <span class="badge" id="voice-badge"><i class="fa-solid fa-microphone"></i> <span id="voice-text">Voice Idle</span></span>
+            <span class="badge" id="tg-badge"><i class="fa-paper-plane"></i> <span id="tg-text">Telegram Active</span></span>
+        </div>
+        <div class="toolbar-actions">
+            <button class="btn-tool" id="btn-reset-layout" title="Reset Grid Layout"><i class="fa-solid fa-table-cells"></i> Reset Grid</button>
+            <button class="btn-tool" id="btn-voice-toggle" title="Toggle Voice Daemon"><i class="fa-solid fa-microphone"></i> Voice</button>
+        </div>
+    </header>
+
+    <!-- Graph Paper Canvas Grid Container -->
+    <main class="canvas-grid" id="canvas-container">
+        <!-- Background Coordinate Overlay -->
+        <div class="grid-overlay"></div>
+
+        <!-- Widget 1: Friday Core Face HUD -->
+        <div class="widget-panel" id="widget-face" style="top: 70px; left: 30px; width: 320px; height: 340px;">
+            <div class="widget-header">
+                <span class="widget-title"><i class="fa-solid fa-circle-nodes"></i> FRIDAY CORE HUD</span>
+                <div class="widget-controls">
+                    <button class="btn-drag" title="Drag Widget"><i class="fa-solid fa-grip-dots-vertical"></i></button>
+                </div>
+            </div>
+            <div class="widget-body face-body">
+                <div class="core-container">
+                    <div class="outer-ring"></div>
+                    <div class="middle-ring"></div>
+                    <div class="inner-core" id="friday-core"></div>
+                    <div class="waveform-svg">
+                        <svg viewBox="0 0 200 60">
+                            <path id="wave-path" d="M 0 30 Q 50 30 100 30 T 200 30" stroke="#00f2fe" stroke-width="3" fill="none"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="core-status" id="core-status-text">IDLE & STANDING BY</div>
+            </div>
+            <div class="resize-handle"></div>
+        </div>
+
+        <!-- Widget 2: Chat Interface -->
+        <div class="widget-panel" id="widget-chat" style="top: 70px; left: 370px; width: 560px; height: 650px;">
+            <div class="widget-header">
+                <span class="widget-title"><i class="fa-solid fa-comments"></i> CONVERSATION</span>
+                <div class="widget-controls">
+                    <button class="btn-drag" title="Drag Widget"><i class="fa-solid fa-grip-dots-vertical"></i></button>
+                </div>
+            </div>
+            <div class="widget-body chat-body">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="msg assistant">
+                        <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                        <div class="bubble">Hey Tony! Friday is online and standing by on your modular blueprint canvas. How can I help you today?</div>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Talk to Friday or request an action..." autocomplete="off">
+                    <button id="btn-send" title="Send Message"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+            <div class="resize-handle"></div>
+        </div>
+
+        <!-- Widget 3: Audio & Mic Selector -->
+        <div class="widget-panel" id="widget-audio" style="top: 430px; left: 30px; width: 320px; height: 290px;">
+            <div class="widget-header">
+                <span class="widget-title"><i class="fa-solid fa-sliders"></i> AUDIO & MIC CONTROL</span>
+                <div class="widget-controls">
+                    <button class="btn-drag" title="Drag Widget"><i class="fa-solid fa-grip-dots-vertical"></i></button>
+                </div>
+            </div>
+            <div class="widget-body audio-body">
+                <label class="input-label"><i class="fa-solid fa-microphone-lines"></i> Active Microphone Device:</label>
+                <select id="mic-select" class="custom-select">
+                    <option value="auto">⚡ Auto-Detect Physical Mic</option>
+                </select>
+
+                <div class="volume-meter-container">
+                    <div class="meter-label">
+                        <span>Live Audio Signal:</span>
+                        <span id="meter-level-val">0%</span>
+                    </div>
+                    <div class="meter-bar-track">
+                        <div class="meter-bar-fill" id="meter-fill"></div>
+                    </div>
+                </div>
+
+                <div class="mic-status-text" id="mic-status-text">
+                    <i class="fa-solid fa-circle-check text-success"></i> Connected & Scanning Signal
+                </div>
+            </div>
+            <div class="resize-handle"></div>
+        </div>
+
+        <!-- Widget 4: System Diagnostics & Logs -->
+        <div class="widget-panel" id="widget-logs" style="top: 70px; left: 950px; width: 300px; height: 650px;">
+            <div class="widget-header">
+                <span class="widget-title"><i class="fa-solid fa-terminal"></i> DIAGNOSTICS & LOGS</span>
+                <div class="widget-controls">
+                    <button class="btn-drag" title="Drag Widget"><i class="fa-solid fa-grip-dots-vertical"></i></button>
+                </div>
+            </div>
+            <div class="widget-body logs-body">
+                <div class="log-stream" id="log-stream">
+                    <div class="log-line info">[SYSTEM] Friday Blueprint Engine initialized.</div>
+                    <div class="log-line success">[LLM] Groq Cloud provider active (openai/gpt-oss-120b).</div>
+                    <div class="log-line info">[AUDIO] Sounddevice input scanner ready.</div>
+                </div>
+            </div>
+            <div class="resize-handle"></div>
+        </div>
+    </main>
+
+    <script src="canvas.js"></script>
+</body>
+</html>

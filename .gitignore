@@ -1,0 +1,23 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+temp/
+temp_*
+test_*.png
+scratch/
+
+# Runtime memory and user data
+memory/data/
